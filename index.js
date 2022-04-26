@@ -9,26 +9,31 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 const grav = 0.2
 class Sprite {
-    constructor({position, velocity, color}) {
+    constructor({
+        position,
+        velocity,
+        color
+    }) {
         this.position = position
         this.velocity = velocity
         this.height = 150
         this.color = color
+        this.lastKey
     }
 
     draw() {
         ctx.fillStyle = this.color
         ctx.fillRect(this.position.x, this.position.y, 50, this.height);
-}
+    }
 
     update() {
         this.draw()
         this.position.y += this.velocity.y
         this.position.x += this.velocity.x
-    
+
         if (this.position.y + this.height >= canvas.height) {
             this.velocity.y = 0
-        } else{
+        } else {
             this.velocity.y += grav
         }
     }
@@ -36,25 +41,25 @@ class Sprite {
 
 const player = new Sprite({
     position: {
-    x: 0,
-    y: 0
-},
+        x: 0,
+        y: 0
+    },
     velocity: {
-    x: 0,
-    y: 0,
+        x: 0,
+        y: 0,
 
     },
     color: 'blue'
 })
 
-const enemy = new Sprite({ 
-    position : {
-    x: 500,
-    y: 100
-},
+const enemy = new Sprite({
+    position: {
+        x: 500,
+        y: 100
+    },
     velocity: {
-    x: 0,
-    y: 0,
+        x: 0,
+        y: 0,
 
     },
     color: 'red'
@@ -63,20 +68,31 @@ const enemy = new Sprite({
 
 const keys = {
     a: {
-        pressed: false
+        pressed: false,
     },
     d: {
-        pressed: false
+        pressed: false,
     },
     w: {
+        pressed: false,
+    },
+    ArrowLeft: {
+        pressed: false
+    },
+    ArrowRight: {
+        pressed: false
+    },
+    ArrowUp: {
         pressed: false
     }
+
+
 }
 
 
 let lastKey
 
-function animate(){
+function animate() {
     window.requestAnimationFrame(animate)
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -84,12 +100,23 @@ function animate(){
     enemy.update()
 
     player.velocity.x = 0
-    
+
+    //player movement
+
     if (keys.a.pressed && lastKey === 'a') {
-        player.velocity.x = -1
-    } 
-    if(keys.d.pressed && lastKey === 'd') {
-        player.velocity.x = 1
+        player.velocity.x = -5
+    }
+    if (keys.d.pressed && lastKey === 'd') {
+        player.velocity.x = 5
+    }
+
+    //enemy movement
+
+    if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
+        enemy.velocity.x = -5
+    }
+    if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
+        enemy.velocity.x = 5
     }
 }
 
@@ -105,6 +132,23 @@ window.addEventListener('keydown', (event) => {
             keys.a.pressed = true
             lastKey = 'a'
             break
+        case 'w':
+            player.velocity.y = -10
+            break
+
+            //Enemy keys
+
+        case 'ArrowLeft':
+            keys.ArrowLeft.pressed = true
+            enemy.lastKey = 'ArrowLeft'
+            break
+        case 'ArrowRight':
+            keys.ArrowRight.pressed = true
+            enemy.lastKey = 'ArrowRight'
+            break
+        case 'ArrowUp':
+            enemy.velocity.y = -10
+            break
     }
 })
 
@@ -116,8 +160,15 @@ window.addEventListener('keyup', (event) => {
         case 'd':
             keys.d.pressed = false
             break
+
+            //Enemy keys
+        case 'ArrowLeft':
+            keys.ArrowLeft.pressed = false
+            break
+        case 'ArrowRight':
+            keys.ArrowRight.pressed = false
+            break
+
     }
 
 })
-
-
