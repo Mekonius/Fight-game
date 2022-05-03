@@ -7,6 +7,11 @@ canvas.height = 578
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
+let gameover = '<H1>Game Over</H1>' + '<button onclick="location.reload()">Restart</button>'
+
+
+
+
 const grav = 0.7
 class Sprite {
     constructor({
@@ -23,6 +28,7 @@ class Sprite {
         this.color = color
         this.lastKey
         this.width
+        this.health = 100
         this.isAttacking
         this.attackBox = {
             position: {
@@ -144,6 +150,21 @@ function rectangularCollision({ rect1, rect2 }) {
     )
 }
 
+let timer = 10
+
+function decreaseTimer() {
+    if (timer > 0) {
+        setTimeout(decreaseTimer, 1000)
+        timer--
+        document.querySelector('#timer').innerHTML = timer
+    }
+
+
+}
+
+decreaseTimer()
+
+
 
 
 
@@ -184,6 +205,8 @@ function animate() {
         player.isAttacking
     ) {
         player.isAttacking = false
+        enemy.health -= 10
+        document.querySelector('#enemyHealth').style.width = enemy.health + '%'
         console.log('player hit');
     }
 
@@ -194,12 +217,37 @@ function animate() {
         }) &&
         enemy.isAttacking
     ) {
-        player.isAttacking = false
+        enemy.isAttacking = false
+        player.health -= 10
+        document.querySelector('#playerHealth').style.width = player.health + '%'
         console.log('Enemy hit');
     }
+
+    if (
+        player.health <= 0 || enemy.health <= 0 || timer <= 0) {
+        document.querySelector('#displayText').innerHTML = gameover
+        if (
+            player.health === enemy.health) {
+            document.querySelector('#displayText').innerHTML = '<h1>Tie</h1>'
+            document.querySelector('#displayText').style.display = 'flex'
+
+        } else if (player.health >= enemy.health || enemy.health === 0) {
+            document.querySelector('#displayText').innerHTML = '<h1>player 1 Wins</h1>'
+            document.querySelector('#displayText').style.display = 'flex'
+        } else if (player.health <= enemy.health || player.health === 0) {
+            document.querySelector('#displayText').innerHTML = '<h1>player 2 Wins</h1>'
+            document.querySelector('#displayText').style.display = 'flex'
+        }
+    }
+
+
+
+
 }
 
 animate()
+
+
 
 
 window.addEventListener('keydown', (event) => {
