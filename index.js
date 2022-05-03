@@ -9,79 +9,9 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 let gameover = '<H1>Game Over</H1>' + '<button onclick="location.reload()">Restart</button>'
 
-
-
-
 const grav = 0.7
-class Sprite {
-    constructor({
-        position,
-        velocity,
-        color = 'red',
-        offSet
 
-    }) {
-        this.position = position
-        this.velocity = velocity
-        this.width = 50
-        this.height = 150
-        this.color = color
-        this.lastKey
-        this.width
-        this.health = 100
-        this.isAttacking
-        this.attackBox = {
-            position: {
-                x: this.position.x,
-                y: this.position.y,
-            },
-            offSet: offSet,
-            width: 100,
-            height: 50,
-        }
-    }
-
-
-
-    draw() {
-        ctx.fillStyle = this.color
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
-        if (this.isAttacking) {
-            //attack box
-            ctx.fillStyle = 'green'
-            ctx.fillRect(
-                this.attackBox.position.x,
-                this.attackBox.position.y,
-                this.attackBox.width,
-                this.attackBox.height
-            )
-        }
-    }
-
-    update() {
-        this.draw()
-        this.attackBox.position.x = this.position.x + this.attackBox.offSet.x
-        this.attackBox.position.y = this.position.y
-
-        this.position.y += this.velocity.y
-        this.position.x += this.velocity.x
-
-        if (this.position.y + this.height >= canvas.height) {
-            this.velocity.y = 0
-        } else {
-            this.velocity.y += grav
-        }
-    }
-
-    attack() {
-        this.isAttacking = true
-        setTimeout(() => {
-            this.isAttacking = false
-        }, 100)
-    }
-}
-
-const player = new Sprite({
+const player = new Fighter({
     position: {
         x: 0,
         y: 0
@@ -98,7 +28,7 @@ const player = new Sprite({
     color: 'blue'
 })
 
-const enemy = new Sprite({
+const enemy = new Fighter({
     position: {
         x: 500,
         y: 0
@@ -150,6 +80,19 @@ function rectangularCollision({ rect1, rect2 }) {
     )
 }
 
+// end game based on health or timer
+function determineWinner({ player, enemy }) {
+    if (player.health === enemy.health) {
+        document.querySelector('#displayText').innerHTML = '<h1>Tie</h1>'
+    } else if (player.health >= enemy.health || enemy.health === 0) {
+        document.querySelector('#displayText').innerHTML = '<h1>player 1 Wins</h1>'
+    } else if (player.health <= enemy.health || player.health === 0) {
+        document.querySelector('#displayText').innerHTML = '<h1>player 2 Wins</h1>'
+    }
+
+}
+
+
 let timer = 10
 
 function decreaseTimer() {
@@ -158,15 +101,15 @@ function decreaseTimer() {
         timer--
         document.querySelector('#timer').innerHTML = timer
     }
+    if (timer === 0 || player.health <= 0 || enemy.health <= 0) {
+        document.querySelector('#displayText').style.display = 'flex'
+        determineWinner({ player, enemy })
+    }
 
 
 }
 
 decreaseTimer()
-
-
-
-
 
 function animate() {
     window.requestAnimationFrame(animate)
@@ -223,23 +166,8 @@ function animate() {
         console.log('Enemy hit');
     }
 
-    // end game based on health or timer
-
-    if (
-        player.health <= 0 || enemy.health <= 0 || timer <= 0) {
-        document.querySelector('#displayText').innerHTML = gameover
-        if (
-            player.health === enemy.health) {
-            document.querySelector('#displayText').innerHTML = '<h1>Tie</h1>'
-            document.querySelector('#displayText').style.display = 'flex'
-
-        } else if (player.health >= enemy.health || enemy.health === 0) {
-            document.querySelector('#displayText').innerHTML = '<h1>player 1 Wins</h1>'
-            document.querySelector('#displayText').style.display = 'flex'
-        } else if (player.health <= enemy.health || player.health === 0) {
-            document.querySelector('#displayText').innerHTML = '<h1>player 2 Wins</h1>'
-            document.querySelector('#displayText').style.display = 'flex'
-        }
+    if (enemy.health <= 0 || player.health <= 0) {
+        determineWinner({ player, enemy })
     }
 
 }
