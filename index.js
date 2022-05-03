@@ -223,6 +223,8 @@ function animate() {
         console.log('Enemy hit');
     }
 
+    // end game based on health or timer
+
     if (
         player.health <= 0 || enemy.health <= 0 || timer <= 0) {
         document.querySelector('#displayText').innerHTML = gameover
@@ -239,9 +241,6 @@ function animate() {
             document.querySelector('#displayText').style.display = 'flex'
         }
     }
-
-
-
 
 }
 
