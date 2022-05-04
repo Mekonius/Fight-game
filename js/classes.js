@@ -38,7 +38,6 @@ class Sprite {
     update() {
         this.draw()
         this.framesElapsed++
-
             if (this.framesElapsed % this.framesHold === 0) {
                 if (this.framesCurrent < this.framesMax - 1) {
                     this.framesCurrent++
@@ -88,24 +87,22 @@ class Fighter extends Sprite {
         this.framesHold = 10
     }
 
-    draw() {
-        ctx.fillStyle = this.color
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
-
-        //attack box
-        if (this.isAttacking) {
-            ctx.fillStyle = 'green'
-            ctx.fillRect(
-                this.attackBox.position.x,
-                this.attackBox.position.y,
-                this.attackBox.width,
-                this.attackBox.height
-            )
-        }
-    }
 
     update() {
         this.draw()
+
+        this.image.height = 75
+
+        this.framesElapsed++
+            if (this.framesElapsed % this.framesHold === 0) {
+                if (this.framesCurrent < this.framesMax - 2) {
+                    this.framesCurrent++
+                } else {
+                    this.framesCurrent = 0
+                }
+            }
+
+
         this.attackBox.position.x = this.position.x + this.attackBox.offSet.x
         this.attackBox.position.y = this.position.y
 
