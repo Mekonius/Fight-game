@@ -1,5 +1,12 @@
 class Sprite {
-    constructor({ position, imageScr, width, height, scale = 1, framesMax = 1 }) {
+    constructor({
+        position,
+        width,
+        height,
+        imageScr,
+        scale = 1,
+        framesMax = 1,
+    }) {
         this.position = position
         this.width = width
         this.height = height
@@ -47,16 +54,23 @@ class Fighter extends Sprite {
         position,
         velocity,
         color = 'red',
-        offSet
-
+        offSet,
+        imageScr,
+        scale = 1,
+        framesMax = 1,
     }) {
-        this.position = position
+        super({
+            position,
+            imageScr,
+            scale,
+            framesMax,
+        })
+
         this.velocity = velocity
         this.width = 50
         this.height = 150
         this.color = color
         this.lastKey
-        this.width
         this.health = 100
         this.isAttacking
         this.isJumping = false
@@ -69,13 +83,17 @@ class Fighter extends Sprite {
             width: 100,
             height: 50,
         }
+        this.framesElapsed = 0
+        this.freamsCurrent = 0
+        this.framesHold = 10
     }
 
     draw() {
         ctx.fillStyle = this.color
         ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+
+        //attack box
         if (this.isAttacking) {
-            //attack box
             ctx.fillStyle = 'green'
             ctx.fillRect(
                 this.attackBox.position.x,

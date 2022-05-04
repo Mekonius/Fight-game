@@ -44,7 +44,9 @@ const player = new Fighter({
         x: 0,
         y: 0,
     },
-    color: 'blue'
+    color: 'blue',
+    imageScr: './assets/character/char_blue.png',
+    scale: 2.5,
 })
 
 const enemy = new Fighter({
