@@ -1,18 +1,48 @@
 class Sprite {
-    constructor({ position }) {
+    constructor({ position, imageScr, width, height, scale = 1, framesMax = 1 }) {
         this.position = position
-        this.width = 50
+        this.width = width
+        this.height = height
+        this.image = new Image()
+        this.image.src = imageScr
+        this.scale = scale
         this.height = 150
+        this.width = 50
+        this.framesMax = framesMax
+        this.framesCurrent = 0
+        this.framesElapsed = 0
+        this.framesHold = 10
     }
 
-    draw() {}
+    draw() {
+        ctx.drawImage(
+            this.image,
+            this.framesCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+            this.position.x,
+            this.position.y,
+            this.image.width / this.framesMax * this.scale,
+            this.image.height * this.scale
+        )
+    }
 
     update() {
         this.draw()
+        this.framesElapsed++
+
+            if (this.framesElapsed % this.framesHold === 0) {
+                if (this.framesCurrent < this.framesMax - 1) {
+                    this.framesCurrent++
+                } else {
+                    this.framesCurrent = 0
+                }
+            }
     }
 }
 
-class Fighter {
+class Fighter extends Sprite {
     constructor({
         position,
         velocity,
@@ -29,6 +59,7 @@ class Fighter {
         this.width
         this.health = 100
         this.isAttacking
+        this.isJumping = false
         this.attackBox = {
             position: {
                 x: this.position.x,
@@ -39,10 +70,6 @@ class Fighter {
             height: 50,
         }
     }
-
-
-
-
 
     draw() {
         ctx.fillStyle = this.color
@@ -67,11 +94,27 @@ class Fighter {
         this.position.y += this.velocity.y
         this.position.x += this.velocity.x
 
-        if (this.position.y + this.height >= canvas.height) {
+        if (this.position.y + this.height >= canvas.height - 96) {
             this.velocity.y = 0
         } else {
             this.velocity.y += grav
         }
+
+        if (this.position.x + this.width >= canvas.width) {
+            this.position.x = canvas.width - this.width
+        } else if (this.position.x <= 0) {
+            this.position.x = 0
+        }
+
+        if (this.position.y + this.height >= canvas.height) {
+            this.position.y = canvas.height - this.height
+        } else if (this.position.y <= 0) {
+            this.position.y = 0
+
+
+        }
+
+
     }
 
     attack() {
