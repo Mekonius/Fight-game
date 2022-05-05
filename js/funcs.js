@@ -29,7 +29,7 @@ function decreaseTimer() {
         timer--
         document.querySelector('#timer').innerHTML = timer
     }
-    if (timer === 0 || player.health <= 0 || enemy.health <= 0) {
+    if (timer === 0) {
         document.querySelector('#displayText').style.display = 'flex'
         determineWinner({ player, enemy })
     }
@@ -53,13 +53,25 @@ function animate() {
     enemy.velocity.x = 0
 
     //player movement
-
+    player.image = player.sprites.idle.image
+    player.framesMax = player.sprites.idle.framesMax
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -5
+        player.image = player.sprites.run.image
+        player.framesMax = player.sprites.run.framesMax
+        // rotate sprite -180 degrees in x axis
+                                                                
     }
     if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = 5
+        player.image = player.sprites.run.image
+        player.framesMax = player.sprites.run.framesMax
+        // rotate sprite 180 degrees in x axis
+        
     }
+
+
+
 
     //enemy movement
 

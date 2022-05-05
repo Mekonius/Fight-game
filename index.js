@@ -1,162 +1,182 @@
-const canvas = document.querySelector('canvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.querySelector("canvas");
+const ctx = canvas.getContext("2d");
 
-canvas.width = 1024
-canvas.height = 578
+canvas.width = 1024;
+canvas.height = 578;
 
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+let gameover =
+  "<H1>Game Over</H1>" + '<button onclick="location.reload()">Restart</button>';
 
-let gameover = '<H1>Game Over</H1>' + '<button onclick="location.reload()">Restart</button>'
-
-const grav = 0.7
+const grav = 0.7;
 
 const background = new Sprite({
-    position: {
-        x: 0,
-        y: 0,
-    },
-    imageScr: './assets/background/background.png',
-})
+  position: {
+    x: 0,
+    y: 0,
+  },
+  imageScr: "./assets/background/background.png",
+});
 
 const shop = new Sprite({
-    position: {
-        x: 650,
-        y: 175,
-    },
-    imageScr: './assets/decorations/shop_anim.png',
-    scale: 2.4,
-    framesMax: 6,
-
-})
+  position: {
+    x: 650,
+    y: 175,
+  },
+  imageScr: "./assets/decorations/shop_anim.png",
+  scale: 2.4,
+  framesMax: 6,
+});
 
 const player = new Fighter({
-    position: {
-        x: 0,
-        y: 0
+  position: {
+    x: 0,
+    y: 0,
+  },
+  velocity: {
+    x: 0,
+    y: 0,
+  },
+  offSet: {
+    x: 0,
+    y: 0,
+  },
+  color: "blue",
+  imageScr: "./assets/character/char_blue_idle.png",
+  scale: 2.4,
+  framesMax: 6,
+  offSet: {
+    x: 0,
+    y: 0,
+  },
+  sprites: {
+    idle: {
+      imageSrc: "./assets/character/char_blue_idle.png",
+      framesMax: 6,
     },
-    velocity: {
-        x: 0,
-        y: 0,
-
+    run: {
+      imageSrc: "./assets/character/char_blue_running.png",
+      framesMax: 8,
     },
-    offSet: {
-        x: 0,
-        y: 0,
+    jump: {
+      imageSrc: "./assets/character/char_blue_jumping.png",
+      framesMax: 8,
     },
-    color: 'blue',
-    imageScr: './assets/character/char_blue_idle.png',
-    scale: 2.4,
-    framesMax: 6,
-})
+    fall: {
+      imageSrc: "./assets/character/char_blue_death.png",
+      framesMax: 6,
+    },
+  },
+});
 
 const enemy = new Fighter({
-    position: {
-        x: 500,
-        y: 0
-    },
-    velocity: {
-        x: 0,
-        y: 0,
-
-    },
-    offSet: {
-        x: -50,
-        y: 0
-    },
-    color: 'red'
-})
-
+  position: {
+    x: 500,
+    y: 0,
+  },
+  velocity: {
+    x: 0,
+    y: 0,
+  },
+  offSet: {
+    x: -600,
+    y: 0,
+  },
+  color: "blue",
+  imageScr: "./assets/character/enemy_red_idle.png",
+  scale: 2.4,
+  framesMax: 6,
+  offSet: {
+    x: 0,
+    y: 0,
+  },
+});
 
 const keys = {
-    a: {
-        pressed: false,
-    },
-    d: {
-        pressed: false,
-    },
-    w: {
-        pressed: false,
-    },
+  a: {
+    pressed: false,
+  },
+  d: {
+    pressed: false,
+  },
+  w: {
+    pressed: false,
+  },
 
-    ArrowLeft: {
-        pressed: false
-    },
-    ArrowRight: {
-        pressed: false
-    },
-    ArrowUp: {
-        pressed: false
-    }
+  ArrowLeft: {
+    pressed: false,
+  },
+  ArrowRight: {
+    pressed: false,
+  },
+  ArrowUp: {
+    pressed: false,
+  },
+};
 
+animate();
 
-}
+const cd = new Set();
 
-animate()
+const cdTimer = 1000;
 
+window.addEventListener("keydown", (event) => {
+  switch (event.key) {
+    case "d":
+      keys.d.pressed = true;
+      player.lastKey = "d";
+      break;
+    case "a":
+      keys.a.pressed = true;
+      player.lastKey = "a";
+      break;
+    case "w":
+      player.velocity.y = -20;
+      break;
+    case " ":
+      player.attack();
+      break;
 
-const cd = new Set()
+    //Enemy keys
 
-const cdTimer = 1000
+    case "ArrowLeft":
+      keys.ArrowLeft.pressed = true;
+      enemy.lastKey = "ArrowLeft";
+      break;
+    case "ArrowRight":
+      keys.ArrowRight.pressed = true;
+      enemy.lastKey = "ArrowRight";
+      break;
+    case "ArrowUp":
+      enemy.velocity.y = -20;
+      break;
+    case "ArrowDown":
+      enemy.isAttacking = true;
+      break;
+  }
+});
 
+window.addEventListener("keyup", (event) => {
+  switch (event.key) {
+    case "a":
+      keys.a.pressed = false;
+      break;
+    case "d":
+      keys.d.pressed = false;
+      break;
+    case " ":
+      player.isAttacking = false;
+      break;
 
-window.addEventListener('keydown', (event) => {
-    switch (event.key) {
-        case 'd':
-            keys.d.pressed = true
-            player.lastKey = 'd'
-            break;
-        case 'a':
-            keys.a.pressed = true
-            player.lastKey = 'a'
-            break
-        case 'w':
-            player.velocity.y = -20
-            break
-        case ' ':
-            player.attack()
-            break
-
-            //Enemy keys
-
-        case 'ArrowLeft':
-            keys.ArrowLeft.pressed = true
-            enemy.lastKey = 'ArrowLeft'
-            break
-        case 'ArrowRight':
-            keys.ArrowRight.pressed = true
-            enemy.lastKey = 'ArrowRight'
-            break
-        case 'ArrowUp':
-            enemy.velocity.y = -20
-            break
-        case 'ArrowDown':
-            enemy.isAttacking = true
-            break
-    }
-})
-
-window.addEventListener('keyup', (event) => {
-    switch (event.key) {
-        case 'a':
-            keys.a.pressed = false
-            break
-        case 'd':
-            keys.d.pressed = false
-            break
-        case ' ':
-            player.isAttacking = false
-            break
-
-            //Enemy keys
-        case 'ArrowLeft':
-            keys.ArrowLeft.pressed = false
-            break
-        case 'ArrowRight':
-            keys.ArrowRight.pressed = false
-            break
-        case 'ArrowDown':
-            enemy.isAttacking = false
-    }
-
-})
+    //Enemy keys
+    case "ArrowLeft":
+      keys.ArrowLeft.pressed = false;
+      break;
+    case "ArrowRight":
+      keys.ArrowRight.pressed = false;
+      break;
+    case "ArrowDown":
+      enemy.isAttacking = false;
+  }
+});
