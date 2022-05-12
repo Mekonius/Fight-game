@@ -91,7 +91,7 @@ class Fighter extends Sprite {
       height: 50,
     };
     this.framesElapsed = 0;
-    this.freamsCurrent = 0;
+    this.framesCurrent = 0;
     this.framesHold = 15;
     this.sprites = sprites
 
@@ -139,5 +139,42 @@ class Fighter extends Sprite {
     setTimeout(() => {
       this.isAttacking = false;
     }, 100);
+  }
+
+  switchSprites(sprite) {
+    switch (sprite) {
+      case "idle":
+        if (this.image !== this.sprites.idle.image) {
+          this.image = this.sprites.idle.image;
+          this.framesMax = this.sprites.idle.framesMax;
+        }        
+        break;
+      case "walk":
+        if (this.image !== this.sprites.run.image) {
+          this.image = this.sprites.run.image;
+          this.framesMax = this.sprites.run.framesMax;
+          this.freamsCurrent
+        }
+        break;
+      case "jump":
+        if (this.image !== this.sprites.jump.image) {
+          this.image = this.sprites.jump.image;
+          this.framesMax = this.sprites.jump.framesMax;
+          break
+        }
+      case "attack":
+        if (this.image !== this.sprites.attack.image) {
+          this.image = this.sprites.attack.image;
+          this.framesMax = this.sprites.attack.framesMax;
+        }
+        break
+      case "falling":
+        if (this.image !== this.sprites.fall.image) {
+          this.image = this.sprites.fall.image;
+          this.framesMax = this.sprites.fall.framesMax;
+        }
+        break
+    
+    }
   }
 }

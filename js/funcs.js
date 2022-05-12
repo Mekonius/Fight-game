@@ -10,7 +10,7 @@ function rectangularCollision({ rect1, rect2 }) {
 
 // end game based on health or timer
 function determineWinner({ player, enemy }) {
-    if (player.health === enemy.health) {
+    if (player.health === enemy.health ) {
         document.querySelector('#displayText').innerHTML = '<h1>Tie</h1>'
     } else if (player.health >= enemy.health || enemy.health === 0) {
         document.querySelector('#displayText').innerHTML = '<h1>player 1 Wins</h1>'
@@ -53,26 +53,32 @@ function animate() {
     enemy.velocity.x = 0
 
     //player movement
-    player.image = player.sprites.idle.image
-    player.framesMax = player.sprites.idle.framesMax
+    player.switchSprites('idle')
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -5
-        player.image = player.sprites.run.image
-        player.framesMax = player.sprites.run.framesMax
+        player.switchSprites('walk')
         // rotate sprite -180 degrees in x axis
                                                                 
     }
     if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = 5
-        player.image = player.sprites.run.image
-        player.framesMax = player.sprites.run.framesMax
-        // rotate sprite 180 degrees in x axis
-        
+        player.switchSprites('walk')
+        // scale image -1 degrees in x axis
+    }
+    if (keys.space.pressed && player.lastKey === 'space') {
+        console.log('space');
+        player.switchSprites('attack')
+        player.attack()
     }
 
+    if (player.velocity.y < 0) {
+        player.switchSprites('jump')
+    }
 
-
-
+    if (player.velocity.y > 0 && player.position.y > 0) {
+        player.switchSprites('falling')
+    }
+ 
     //enemy movement
 
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
@@ -80,6 +86,9 @@ function animate() {
     }
     if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
         enemy.velocity.x = 5
+    }
+    if (keys.ArrowUp.pressed && enemy.lastKey === 'ArrowUp') {
+        enemy.velocity.y = -5
     }
 
     // Detect for collision
@@ -109,8 +118,9 @@ function animate() {
         console.log('Enemy hit');
     }
 
-    if (enemy.health <= 0 || player.health <= 0) {
-        determineWinner({ player, enemy })
+    // end game
+    if (player.health === 0 || enemy.health === 0) {
+    determineWinner({ player, enemy })
     }
 
 }
