@@ -75,6 +75,10 @@ const player = new Fighter({
         imageSrc: "./assets/character/mac/Take hit - white silhouette.png",
         framesMax: 4,
       },
+    death: {
+        imageSrc: "./assets/character/mac/Death.png",
+        framesMax: 6,
+    }
   },
   attackBox: {
     offset: {
@@ -128,6 +132,10 @@ const enemy = new Fighter({
       imageSrc: "./assets/character/kenji/Take hit.png",
       framesMax: 3,
     },
+    death: {
+        imageSrc: "./assets/character/kenji/Death.png",
+        framesMax: 7,
+    }
   },
   attackBox: {
     offset: {

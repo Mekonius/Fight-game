@@ -96,7 +96,6 @@ function animate() {
   ) {
     enemy.takeHit();
     player.isAttacking = false;
-    enemy.health -= 10;
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
     console.log("player hit");
   }
