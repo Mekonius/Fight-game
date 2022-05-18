@@ -64,6 +64,7 @@ class Fighter extends Sprite {
     framesMax = 1,
     offSet = { x: 0, y: 0 },
     sprites,
+    attackBox = { offset: {}, width: undefined, height: undefined },
   }) {
     super({
       position,
@@ -86,9 +87,9 @@ class Fighter extends Sprite {
         x: this.position.x,
         y: this.position.y,
       },
-      offSet: offSet,
-      width: 100,
-      height: 50,
+      offSet: attackBox.offset,
+      width: attackBox.width,
+      height: attackBox.height,
     };
     this.framesElapsed = 0;
     this.framesCurrent = 0;
@@ -108,7 +109,14 @@ class Fighter extends Sprite {
     this.animateFrames();
 
     this.attackBox.position.x = this.position.x + this.attackBox.offSet.x;
-    this.attackBox.position.y = this.position.y;
+    this.attackBox.position.y = this.position.y + this.attackBox.offSet.y;
+
+    // ctx.fillRect(
+    //   this.attackBox.position.x,
+    //   this.attackBox.position.y,
+    //   this.attackBox.width,
+    //   this.attackBox.height
+    // );
 
     this.position.y += this.velocity.y;
     this.position.x += this.velocity.x;
@@ -139,17 +147,28 @@ class Fighter extends Sprite {
   attack() {
     this.switchSprites("attack");
     this.isAttacking = true;
-    setTimeout(() => {
-      this.isAttacking = false;
-    }, 100);
+  }
+
+  takeHit() {
+    this.switchSprites("takeHit");
+    this.health -= 10;
   }
 
   switchSprites(sprite) {
-    if (
-      this.image === this.sprites.attack.image &&
-      this.framesCurrent < this.sprites.attack.framesMax - 1
-    )
-      return;
+    //overriding all other animations with the attack animation
+	if (
+		this.image === this.sprites.attack.image &&
+		this.framesCurrent < this.sprites.attack.framesMax - 1
+	  )
+		return
+  
+	  // override when fighter gets hit
+	  if (
+		this.image === this.sprites.takeHit.image &&
+		this.framesCurrent < this.sprites.takeHit.framesMax - 1
+	  )
+		return
+	
 
     switch (sprite) {
       case "idle":
@@ -183,6 +202,13 @@ class Fighter extends Sprite {
         if (this.image !== this.sprites.attack.image) {
           this.image = this.sprites.attack.image;
           this.framesMax = this.sprites.attack.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+      case "takeHit":
+        if (this.image !== this.sprites.takeHit.image) {
+          this.image = this.sprites.takeHit.image;
+          this.framesMax = this.sprites.takeHit.framesMax;
           this.framesCurrent = 0;
         }
         break;

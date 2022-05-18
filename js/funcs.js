@@ -60,7 +60,6 @@ function animate() {
     // scale image -1 degrees in x axis
   }
 
-
   if (player.velocity.y < 0) {
     player.switchSprites("jump");
   } else if (player.velocity.y > 0) {
@@ -80,39 +79,49 @@ function animate() {
     // scale image -1 degrees in x axis
   }
 
-
   if (enemy.velocity.y < 0) {
     enemy.switchSprites("ArrowUp");
   } else if (enemy.velocity.y > 0) {
     enemy.switchSprites("falling");
   }
 
-  // Detect for collision
+  // Detect for collision && enemy gets hit
   if (
     rectangularCollision({
       rect1: player,
       rect2: enemy,
     }) &&
-    player.isAttacking
+    player.isAttacking &&
+    player.framesCurrent === 4
   ) {
+    enemy.takeHit();
     player.isAttacking = false;
     enemy.health -= 10;
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
     console.log("player hit");
   }
 
+  //if player misses
+  if (player.isAttacking && player.framesCurrent === 4)
+    player.isAttacking = false;
+
   if (
     rectangularCollision({
       rect1: enemy,
       rect2: player,
     }) &&
-    enemy.isAttacking
+    enemy.isAttacking &&
+    enemy.framesCurrent === 2
   ) {
+    player.takeHit();
     enemy.isAttacking = false;
-    player.health -= 10;
     document.querySelector("#playerHealth").style.width = player.health + "%";
     console.log("Enemy hit");
   }
+
+  //if enemy misses
+  if (enemy.isAttacking && enemy.framesCurrent === 2)
+    player.isAttacking = false;
 
   // end game
   if (player.health === 0 || enemy.health === 0) {
