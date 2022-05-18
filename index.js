@@ -9,7 +9,7 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 let gameover =
     "<H1>Game Over</H1>" + '<button onclick="location.reload()">Restart</button>';
 
-const grav = 0.7;
+const gravity = 0.7;
 
 const background = new Sprite({
     position: {
@@ -43,32 +43,32 @@ const player = new Fighter({
         y: 0,
     },
     color: "blue",
-    imageScr: "./assets/character/char_blue_idle.png",
-    scale: 2.4,
+    imageScr: "./assets/character/mac/Idle.png",
+    scale: 2.5,
     framesMax: 6,
     offSet: {
-        x: 0,
-        y: 0,
+        x: 215,
+        y: 175,
     },
     sprites: {
         idle: {
-            imageSrc: "./assets/character/char_blue_idle.png",
-            framesMax: 6,
+            imageSrc: "./assets/character/mac/Idle.png",
+            framesMax: 8,
         },
         run: {
-            imageSrc: "./assets/character/char_blue_running.png",
+            imageSrc: "./assets/character/mac/Run.png",
             framesMax: 8,
         },
         jump: {
-            imageSrc: "./assets/character/char_blue_jumping.png",
-            framesMax: 4,
+            imageSrc: "./assets/character/mac/Jump.png",
+            framesMax: 2,
         },
         fall: {
-            imageSrc: "./assets/character/char_blue_falling.png",
-            framesMax: 4,
+            imageSrc: "./assets/character/mac/Fall.png",
+            framesMax: 2,
         },
         attack: {
-            imageSrc: "./assets/character/char_blue_atk.png",
+            imageSrc: "./assets/character/mac/attack1.png",
             framesMax: 6,
         }
     },
@@ -84,16 +84,38 @@ const enemy = new Fighter({
         y: 0,
     },
     offSet: {
-        x: -600,
-        y: 0,
+        x: 215,
+        y: 175,
     },
     color: "blue",
-    imageScr: "./assets/character/enemy_red_idle.png",
+    imageScr: "./assets/character/kenji/Idle.png",
     scale: 2.4,
-    framesMax: 6,
+    framesMax: 4,
     offSet: {
         x: 0,
-        y: 0,
+        y: 175,
+    },
+    sprites: {
+        idle: {
+            imageSrc: "./assets/character/kenji/Idle.png",
+            framesMax: 4,
+        },
+        run: {
+            imageSrc: "./assets/character/kenji/Run.png",
+            framesMax: 8,
+        },
+        jump: {
+            imageSrc: "./assets/character/kenji/Jump.png",
+            framesMax: 2,
+        },
+        fall: {
+            imageSrc: "./assets/character/kenji/Fall.png",
+            framesMax: 2,
+        },
+        attack: {
+            imageSrc: "./assets/character/kenji/attack2.png",
+            framesMax: 4,
+        }
     },
 });
 
@@ -161,7 +183,7 @@ window.addEventListener("keydown", (event) => {
             enemy.velocity.y = -20;
             break;
         case "ArrowDown":
-            enemy.isAttacking = true;
+            enemy.attack()
             break;
     }
 });
